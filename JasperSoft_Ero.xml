@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Discrepancy_Corrective_Action_Worksheet" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="40668fd5-cf65-42dd-98d8-0921919c97b5">
-    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="MRO_APEX"/>
-    <parameter name="P_WOFH_ID" class="java.lang.Integer"/>
-    <queryString language="SQL">
-        <![CDATA[SELECT 
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MRO_APEX"/>
+	<parameter name="P_WOFH_ID" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT 
             hdr.WO_NUMBER,
             hdr.STATUS,
             hdr.PN,
@@ -45,92 +45,162 @@
             CRG_WO_FINDINGS_DETAIL det ON hdr.WOFH_ID = det.WOFH_ID
         WHERE 
             hdr.WOFH_ID = $P{P_WOFH_ID}]]>
-    </queryString>
-    <field name="WO_NUMBER" class="java.lang.String"/>
-    <field name="STATUS" class="java.lang.Integer"/>
-    <field name="PN" class="java.lang.String"/>
-    <field name="SERIAL_NUMBER" class="java.lang.String"/>
-    <field name="HDR_CMM" class="java.lang.String"/>
-    <field name="COMPANY_NAME" class="java.lang.String"/>
-    <field name="DESCRIPTION" class="java.lang.String"/>
-    <field name="HDR_DTD" class="java.util.Date"/>
-    <field name="M10_PRINTED" class="java.lang.String"/>
-    <field name="FINDINGS" class="java.lang.String"/>
-    <field name="REPAIR_DISPOSITION" class="java.lang.String"/>
-    <field name="MECHANNIC" class="java.lang.String"/>
-    <field name="MECHANNIC_DATE" class="java.util.Date"/>
-    <field name="INSPECTOR" class="java.lang.String"/>
-    <field name="INSPECTOR_DATE" class="java.util.Date"/>
-    <field name="ITEM_NUMBER" class="java.lang.Integer"/>
-    <field name="DET_CMM" class="java.lang.String"/>
-    <field name="CMM_REVISION" class="java.lang.String"/>
-    <field name="DAMAGE_DIMENSION_W" class="java.lang.String"/>
-    <field name="DAMAGE_LOCATION" class="java.lang.String"/>
-    <field name="EAR_REQUEST" class="java.lang.String"/>
-    <field name="DET_WO_NUMBER" class="java.lang.String"/>
-    <field name="ENGINEER" class="java.lang.String"/>
-    <field name="ENGINEER_DATE" class="java.util.Date"/>
-    <field name="DAMAGE_SHAPE" class="java.lang.String"/>
-    <field name="DAMAGE_DIMENSION_H" class="java.lang.String"/>
-    <field name="DAMAGE_PART_DESCRIPTION" class="java.lang.String"/>
-    
-    <background>
-        <band splitType="Stretch"/>
-    </background>
-
-    <title>
-        <band height="100" splitType="Stretch">
-            <staticText>
-                <reportElement x="130" y="2" width="277" height="78" uuid="67e6ecdb-52bc-416b-b151-00ced78d3fd4"/>
-                <textElement>
-                    <font size="20" isBold="true"/>
-                </textElement>
-                <text><![CDATA[GA Telesis Composite Repair Group Discrepancy and Corrective Action Worksheet]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="410" y="0" width="100" height="15" uuid="94386e30-87b8-4fee-98dc-11c9ab5b52fd"/>
-                <text><![CDATA[CUSTOMER:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="410" y="15" width="155" height="15" uuid="db801d76-7d86-4299-ac45-772d92e92a42"/>
-                <textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="410" y="30" width="100" height="15" uuid="0f31c5c4-79ac-4fcf-8f90-5b8de612ffdb"/>
-                <text><![CDATA[WORKSCOPE: REPAIR]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="0" width="100" height="15" uuid="e2952014-7f72-41a6-ae5d-1f96bae84b66"/>
-                <text><![CDATA[W/O:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="0" y="10" width="100" height="15" uuid="22c8256a-86b5-43a9-b961-230661669d40"/>
-                <textFieldExpression><![CDATA[$F{WO_NUMBER}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="0" y="25" width="100" height="15" uuid="62ddc303-7734-40da-ae40-eff8f1a9469e"/>
-                <text><![CDATA[P/N:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="0" y="40" width="100" height="15" uuid="424bd74c-5bff-44a5-b181-4d9be9087649"/>
-                <textFieldExpression><![CDATA[$F{PN}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="0" y="55" width="100" height="15" uuid="5fc5203a-fb07-4b2f-964e-0c507811c205"/>
-                <text><![CDATA[S/N:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="0" y="65" width="100" height="15" uuid="5024fcd9-3101-4bde-b299-becd73740ded"/>
-                <textFieldExpression><![CDATA[$F{SERIAL_NUMBER}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="0" y="80" width="100" height="15" uuid="2e1b17a9-7a7d-4210-8556-7d75ba66a9eb"/>
-                <text><![CDATA[DESC:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="100" y="80" width="455" height="15" uuid="c1d3b75b-a304-4462-9471-f0086d2538a8"/>
-                <textFieldExpression><![CDATA[$F{DESCRIPTION}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="479" y="30" width="65" height="15" uuid="f8640534-80a9-4432-b86f-6eb30eb06fc7"/>
-                <text><![CDATA[REPAIR]]></
+	</queryString>
+	<field name="WO_NUMBER" class="java.lang.String"/>
+	<field name="STATUS" class="java.lang.Integer"/>
+	<field name="PN" class="java.lang.String"/>
+	<field name="SERIAL_NUMBER" class="java.lang.String"/>
+	<field name="HDR_CMM" class="java.lang.String"/>
+	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<field name="HDR_DTD" class="java.util.Date"/>
+	<field name="M10_PRINTED" class="java.lang.String"/>
+	<field name="FINDINGS" class="java.lang.String"/>
+	<field name="REPAIR_DISPOSITION" class="java.lang.String"/>
+	<field name="MECHANNIC" class="java.lang.String"/>
+	<field name="MECHANNIC_DATE" class="java.util.Date"/>
+	<field name="INSPECTOR" class="java.lang.String"/>
+	<field name="INSPECTOR_DATE" class="java.util.Date"/>
+	<field name="ITEM_NUMBER" class="java.lang.Integer"/>
+	<field name="DET_CMM" class="java.lang.String"/>
+	<field name="CMM_REVISION" class="java.lang.String"/>
+	<field name="DAMAGE_DIMENSION_W" class="java.lang.String"/>
+	<field name="DAMAGE_LOCATION" class="java.lang.String"/>
+	<field name="EAR_REQUEST" class="java.lang.String"/>
+	<field name="DET_WO_NUMBER" class="java.lang.String"/>
+	<field name="ENGINEER" class="java.lang.String"/>
+	<field name="ENGINEER_DATE" class="java.util.Date"/>
+	<field name="DAMAGE_SHAPE" class="java.lang.String"/>
+	<field name="DAMAGE_DIMENSION_H" class="java.lang.String"/>
+	<field name="DAMAGE_PART_DESCRIPTION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="100" splitType="Stretch">
+			<staticText>
+				<reportElement x="130" y="2" width="277" height="78" uuid="67e6ecdb-52bc-416b-b151-00ced78d3fd4"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GA Telesis Composite Repair Group Discrepancy and Corrective Action Worksheet]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="0" width="100" height="15" uuid="94386e30-87b8-4fee-98dc-11c9ab5b52fd"/>
+				<text><![CDATA[CUSTOMER:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="410" y="15" width="155" height="15" uuid="db801d76-7d86-4299-ac45-772d92e92a42"/>
+				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="410" y="30" width="100" height="15" uuid="0f31c5c4-79ac-4fcf-8f90-5b8de612ffdb"/>
+				<text><![CDATA[WORKSCOPE: REPAIR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="15" uuid="e2952014-7f72-41a6-ae5d-1f96bae84b66"/>
+				<text><![CDATA[W/O:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="10" width="100" height="15" uuid="22c8256a-86b5-43a9-b961-230661669d40"/>
+				<textFieldExpression><![CDATA[$F{WO_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="25" width="100" height="15" uuid="62ddc303-7734-40da-ae40-eff8f1a9469e"/>
+				<text><![CDATA[P/N:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="40" width="100" height="15" uuid="424bd74c-5bff-44a5-b181-4d9be9087649"/>
+				<textFieldExpression><![CDATA[$F{PN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="55" width="100" height="15" uuid="5fc5203a-fb07-4b2f-964e-0c507811c205"/>
+				<text><![CDATA[S/N:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="65" width="100" height="15" uuid="5024fcd9-3101-4bde-b299-becd73740ded"/>
+				<textFieldExpression><![CDATA[$F{SERIAL_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="80" width="100" height="15" uuid="2e1b17a9-7a7d-4210-8556-7d75ba66a9eb"/>
+				<text><![CDATA[DESC:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="30" y="80" width="455" height="15" uuid="c1d3b75b-a304-4462-9471-f0086d2538a8"/>
+				<textFieldExpression><![CDATA[$F{DESCRIPTION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="479" y="30" width="65" height="15" uuid="f8640534-80a9-4432-b86f-6eb30eb06fc7"/>
+				<text><![CDATA[REPAIR]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="45" width="555" height="15" uuid="d7a3574d-719e-4c6b-aaf4-ecbea15e0ca5"/>
+				<text><![CDATA[Form: M-10-Rev. # 8 Dated: 1/2/2018]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="7" y="5" width="100" height="15" uuid="6672450d-cc8e-4724-a7a6-0f2adcf13412"/>
+				<text><![CDATA[Item #]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="7" y="20" width="100" height="15" uuid="fba2df3c-5b1f-48b5-9919-f7f6f6d2c44b"/>
+				<textFieldExpression><![CDATA[$F{ITEM_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="117" y="5" width="100" height="15" uuid="8620d08b-cc7a-4e12-a8a5-8a5ec2e1648b"/>
+				<text><![CDATA[Repair Disposition]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="117" y="20" width="100" height="15" uuid="5dfb63c8-432e-4a94-8586-3dc468d74842"/>
+				<textFieldExpression><![CDATA[$F{REPAIR_DISPOSITION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="227" y="5" width="100" height="15" uuid="a49dbe2c-0938-4c67-b2e8-f4e21eadd64c"/>
+				<text><![CDATA[Mech./Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="227" y="20" width="100" height="15" uuid="15f81e20-5b3c-4cbe-b9b7-478f2c6e9488"/>
+				<textFieldExpression><![CDATA[$F{MECHANNIC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="227" y="35" width="100" height="15" uuid="15f81e20-5b3c-4cbe-b9b7-478f2c6e9489"/>
+				<textFieldExpression><![CDATA[$F{MECHANNIC_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="337" y="5" width="100" height="15" uuid="2497a564-8e4e-487a-b5c3-92e1f8f6d82b"/>
+				<text><![CDATA[Insp./Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="337" y="20" width="100" height="15" uuid="15f81e20-5b3c-4cbe-b9b7-478f2c6e9490"/>
+				<textFieldExpression><![CDATA[$F{INSPECTOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="337" y="35" width="100" height="15" uuid="15f81e20-5b3c-4cbe-b9b7-478f2c6e9491"/>
+				<textFieldExpression><![CDATA[$F{INSPECTOR_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="447" y="5" width="100" height="15" uuid="ba7d3f16-e8a1-4bc0-a1c5-2b170e4f94bb"/>
+				<text><![CDATA[Findings]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="447" y="20" width="100" height="15" uuid="cfe1bbd4-4e78-4a6d-bde5-5943dcddc599"/>
+				<textFieldExpression><![CDATA[$F{FINDINGS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="300" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="20" width="555" height="70" uuid="16b95bcd-2565-4041-9853-a3acd7bd7ee1"/>
+				<textFieldExpression><![CDATA[$F{ITEM_NUMBER} + " " + $F{REPAIR_DISPOSITION} + " " + $F{MECHANNIC} + " " + $F{MECHANNIC_DATE} + " " + $F{INSPECTOR} + " " + $F{INSPECTOR_DATE} + " " + $F{FINDINGS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
