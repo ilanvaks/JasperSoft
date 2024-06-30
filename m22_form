@@ -1,0 +1,43 @@
+SELECT 
+    hdr.WO_NUMBER AS WO_Number,
+    det.ITEM_NUMBER AS Item_Number,
+    cmp.COMPANY_NAME AS Customer,
+    (SELECT wo.COMPANY_REF_NUMBER FROM GATCRGSE.WO_OPERATION@prod.gatelesis.com wo WHERE hdr.WO_NUMBER = wo.SI_NUMBER) AS Customer_RO,  -- Subquery to get Customer_RO
+    det.CERTIFICATION_BASIS AS Certification_Basis,
+    hdr.PN AS Part_Number,
+    hdr.SERIAL_NUMBER AS Serial_Number,
+    (SELECT DESCRIPTION FROM GATCRGSE.PARTS_MASTER@prod.gatelesis.com pm WHERE pm.pn = hdr.pn) AS Nomenclature,
+    det.AC_MODEL AS AC_Model,
+    dmg.DAMAGE_TYPE_DESC AS Damage_Type,
+   det.DAMAGE_SHAPE || ' ' || det.DAMAGE_DIMENSION_W || ' x ' || det.DAMAGE_DIMENSION_H || ' x ' || det.DAMAGE_DEPTH AS Damage_Dimensions,
+    det.DAMAGE_LOCATION AS Damage_Location,
+    CASE 
+        WHEN ero.SYSTEM_MAPPING = -1 THEN 'NOT REQUIRED'
+        WHEN ero.SYSTEM_MAPPING = 0 THEN 'NO'
+        WHEN ero.SYSTEM_MAPPING = 1 THEN 'YES'
+    END AS Mapping_In_System,
+    ero.EXIST_REPAIR_DETAIL AS Photos_In_System,
+    CASE 
+        WHEN ero.EXIST_REPAIR_INTERFERING = 'Y' THEN 'YES'
+        ELSE 'NO'
+    END AS Existing_Repair_Interference,
+    CASE 
+        WHEN ero.SRM_CMM_APPLY = 'Y' THEN 'YES'
+        ELSE 'NO'
+    END AS SRM_CMM_Repair_Applicaibility,
+    ero.SRM_CMM_REFERENCE AS SRM_CMM_Repair_Reference,
+    ero.REPAIR_CANT_USE_REASON AS Repair_Not_Used_Reason,
+    ero.APPLICABLE_ADS AS Applicable_ADs,
+    ero.REMARKS AS Remarks
+FROM 
+    CRG_WO_FINDINGS_HEADER hdr
+JOIN 
+    CRG_WO_FINDINGS_DETAIL det ON hdr.WOFH_ID = det.WOFH_ID
+JOIN 
+    GATCRGSE.COMPANIES@prod.gatelesis.com cmp ON hdr.CMP_AUTO_KEY = cmp.CMP_AUTO_KEY
+LEFT JOIN 
+    CRG_WO_DAMAGE_TYPES dmg ON det.DAMAGE_TYPE = dmg.DAMAGE_TYPE_ID
+LEFT JOIN 
+    CRG_WO_ERO ero ON det.WOF_ID = ero.WOF_ID
+WHERE 
+    hdr.WOFH_ID = 44
