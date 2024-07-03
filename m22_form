@@ -55,7 +55,7 @@ SELECT
     (SELECT DESCRIPTION FROM GATCRGSE.PARTS_MASTER@prod.gatelesis.com pm WHERE pm.pn = hdr.pn) AS Nomenclature,
     det.AC_MODEL AS AC_Model,
     dmg.DAMAGE_TYPE_DESC AS Damage_Type,
-   det.DAMAGE_SHAPE || ' ' || det.DAMAGE_DIMENSION_W || ' x ' || det.DAMAGE_DIMENSION_H || ' x ' || det.DAMAGE_DEPTH AS Damage_Dimensions,
+   det.DAMAGE_SHAPE || ' x ' || det.DAMAGE_DIMENSION_W || ' x ' || det.DAMAGE_DIMENSION_H || ' x ' || det.DAMAGE_DEPTH AS Damage_Dimensions,
     det.DAMAGE_LOCATION AS Damage_Location,
     CASE 
         WHEN ero.SYSTEM_MAPPING = -1 THEN 'NOT REQUIRED'
