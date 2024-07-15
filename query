@@ -1,0 +1,46 @@
+SELECT
+    hdr.WO_NUMBER AS WO_Number,
+    det.ITEM_NUMBER AS Item_Number,
+    COALESCE((SELECT cmp.COMPANY_NAME FROM GATCRGSE.COMPANIES@prod.gatelesis.com cmp WHERE hdr.CMP_AUTO_KEY = cmp.CMP_AUTO_KEY), 'N/A') AS Customer,
+    COALESCE((SELECT wo.COMPANY_REF_NUMBER FROM GATCRGSE.WO_OPERATION@prod.gatelesis.com wo WHERE hdr.WO_NUMBER = wo.SI_NUMBER), 'N/A') AS Customer_RO,
+    COALESCE(det.CERTIFICATION_BASIS, 'N/A') AS Certification_Basis,
+    COALESCE(hdr.PN, 'N/A') AS Part_Number,
+    COALESCE(hdr.SERIAL_NUMBER, 'N/A') AS Serial_Number,
+    COALESCE((SELECT DESCRIPTION FROM GATCRGSE.PARTS_MASTER@prod.gatelesis.com pm WHERE pm.pn = hdr.pn), 'N/A') AS Nomenclature,
+    COALESCE(det.AC_MODEL, 'N/A') AS AC_Model,
+    COALESCE(dmg.DAMAGE_TYPE_DESC, 'N/A') AS Damage_Type,
+    COALESCE(det.DAMAGE_SHAPE || ' x ' || det.DAMAGE_DIMENSION_W || ' x ' || det.DAMAGE_DIMENSION_H || ' x ' || det.DAMAGE_DEPTH, 'N/A') AS Damage_Dimensions,
+    COALESCE(det.DAMAGE_LOCATION, 'N/A') AS Damage_Location,
+    CASE
+        WHEN ero.SYSTEM_MAPPING = -1 THEN 'NOT REQUIRED'
+        WHEN ero.SYSTEM_MAPPING = 0 THEN 'NO'
+        WHEN ero.SYSTEM_MAPPING = 1 THEN 'YES'
+        ELSE 'N/A'
+    END AS Mapping_In_System,
+    COALESCE(ero.EXIST_REPAIR_DETAIL, 'N/A') AS Photos_In_System,
+    CASE
+        WHEN ero.EXIST_REPAIR_INTERFERING = 'Y' THEN 'YES'
+        ELSE 'NO'
+    END AS Existing_Repair_Interference,
+    CASE
+        WHEN ero.SRM_CMM_APPLY = 'Y' THEN 'YES'
+        ELSE 'NO'
+    END AS SRM_CMM_Repair_Applicaibility,
+    COALESCE(ero.SRM_CMM_REFERENCE, 'N/A') AS SRM_CMM_Repair_Reference,
+    COALESCE(ero.REPAIR_CANT_USE_REASON, 'N/A') AS Repair_Not_Used_Reason,
+    COALESCE(ero.APPLICABLE_ADS, 'N/A') AS Applicable_ADs,
+    COALESCE(ero.REMARKS, 'N/A') AS Remarks,
+    COALESCE(det.MECHANNIC, 'N/A') AS Requested_by,
+    NVL(TO_DATE(TO_CHAR(det.MECHANNIC_DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD'), TO_DATE('1970-01-01', 'YYYY-MM-DD')) AS Requested_Date,
+    (SELECT DAMAGE_TYPE_CODE FROM CRG_WO_DAMAGE_TYPES dmg_type WHERE det.DAMAGE_TYPE = dmg_type.DAMAGE_TYPE_ID) AS type_of_damage
+FROM
+    CRG_WO_FINDINGS_HEADER hdr
+JOIN
+    CRG_WO_FINDINGS_DETAIL det ON hdr.WOFH_ID = det.WOFH_ID
+JOIN
+    CRG_WO_DAMAGE_TYPES dmg ON det.DAMAGE_TYPE = dmg.DAMAGE_TYPE_ID
+JOIN
+    CRG_WO_ERO ero ON det.WOF_ID = ero.WOF_ID
+WHERE
+    hdr.WOFH_ID = $P{P_WOFH_ID}
+    AND ero.WOF_ID IS NOT NULL
