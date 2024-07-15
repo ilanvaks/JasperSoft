@@ -87,3 +87,4 @@ LEFT JOIN
     CRG_WO_ERO ero ON det.WOF_ID = ero.WOF_ID
 WHERE 
      hdr.WOFH_ID = $P{P_WOFH_ID}]]>
+

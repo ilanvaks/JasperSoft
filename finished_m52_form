@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="M52_Form" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a0a1e2b8-1d37-45c6-83f4-5e0e1a123456">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MRO_APEX"/>
+	<property name="ireport.jasperserver.url" value="http://fllhq-as03.gatelesis.com:8080/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="jasperadmin"/>
+	<property name="ireport.jasperserver.report.resource" value="/reports/DEV/m52_files/m52_"/>
+	<property name="ireport.jasperserver.reportUnit" value="/reports/DEV/m52"/>
+	<parameter name="P_WOFH_ID" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    hdr.WO_NUMBER AS WO_Number,
+    det.ITEM_NUMBER AS Item_Number,
+    COALESCE((SELECT cmp.COMPANY_NAME FROM GATCRGSE.COMPANIES@prod.gatelesis.com cmp WHERE hdr.CMP_AUTO_KEY = cmp.CMP_AUTO_KEY), 'N/A') AS Customer,
+    COALESCE((SELECT wo.COMPANY_REF_NUMBER FROM GATCRGSE.WO_OPERATION@prod.gatelesis.com wo WHERE hdr.WO_NUMBER = wo.SI_NUMBER), 'N/A') AS Customer_RO,
+    COALESCE(det.CERTIFICATION_BASIS, 'N/A') AS Certification_Basis,
+    COALESCE(hdr.PN, 'N/A') AS Part_Number,
+    COALESCE(hdr.SERIAL_NUMBER, 'N/A') AS Serial_Number,
+    COALESCE((SELECT DESCRIPTION FROM GATCRGSE.PARTS_MASTER@prod.gatelesis.com pm WHERE pm.pn = hdr.pn), 'N/A') AS Nomenclature,
+    COALESCE(det.AC_MODEL, 'N/A') AS AC_Model,
+    COALESCE(dmg.DAMAGE_TYPE_DESC, 'N/A') AS Damage_Type,
+    COALESCE(det.DAMAGE_SHAPE || ' x ' || det.DAMAGE_DIMENSION_W || ' x ' || det.DAMAGE_DIMENSION_H || ' x ' || det.DAMAGE_DEPTH, 'N/A') AS Damage_Dimensions,
+    COALESCE(det.DAMAGE_LOCATION, 'N/A') AS Damage_Location,
+    CASE
+        WHEN ero.SYSTEM_MAPPING = -1 THEN 'NOT REQUIRED'
+        WHEN ero.SYSTEM_MAPPING = 0 THEN 'NO'
+        WHEN ero.SYSTEM_MAPPING = 1 THEN 'YES'
+        ELSE 'N/A'
+    END AS Mapping_In_System,
+    COALESCE(ero.EXIST_REPAIR_DETAIL, 'N/A') AS Photos_In_System,
+    CASE
+        WHEN ero.EXIST_REPAIR_INTERFERING = 'Y' THEN 'YES'
+        ELSE 'NO'
+    END AS Existing_Repair_Interference,
+    CASE
+        WHEN ero.SRM_CMM_APPLY = 'Y' THEN 'YES'
+        ELSE 'NO'
+    END AS SRM_CMM_Repair_Applicaibility,
+    COALESCE(ero.SRM_CMM_REFERENCE, 'N/A') AS SRM_CMM_Repair_Reference,
+    COALESCE(ero.REPAIR_CANT_USE_REASON, 'N/A') AS Repair_Not_Used_Reason,
+    COALESCE(ero.APPLICABLE_ADS, 'N/A') AS Applicable_ADs,
+    COALESCE(ero.REMARKS, 'N/A') AS Remarks,
+    COALESCE(det.MECHANNIC, 'N/A') AS Requested_by,
+    NVL(TO_DATE(TO_CHAR(det.MECHANNIC_DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD'), TO_DATE('1970-01-01', 'YYYY-MM-DD')) AS Requested_Date
+FROM
+    CRG_WO_FINDINGS_HEADER hdr
+JOIN
+    CRG_WO_FINDINGS_DETAIL det ON hdr.WOFH_ID = det.WOFH_ID
+JOIN
+    CRG_WO_DAMAGE_TYPES dmg ON det.DAMAGE_TYPE = dmg.DAMAGE_TYPE_ID
+JOIN
+    CRG_WO_ERO ero ON det.WOF_ID = ero.WOF_ID
+WHERE
+    hdr.WOFH_ID = $P{P_WOFH_ID}
+    AND ero.WOF_ID IS NOT NULL]]>
+	</queryString>
+	<field name="WO_Number" class="java.lang.String"/>
+	<field name="Item_Number" class="java.lang.String"/>
+	<field name="Customer" class="java.lang.String"/>
+	<field name="Customer_RO" class="java.lang.String"/>
+	<field name="Certification_Basis" class="java.lang.String"/>
+	<field name="Part_Number" class="java.lang.String"/>
+	<field name="Serial_Number" class="java.lang.String"/>
+	<field name="Nomenclature" class="java.lang.String"/>
+	<field name="AC_Model" class="java.lang.String"/>
+	<field name="Damage_Type" class="java.lang.String"/>
+	<field name="Damage_Dimensions" class="java.lang.String"/>
+	<field name="Damage_Location" class="java.lang.String"/>
+	<field name="Mapping_In_System" class="java.lang.String"/>
+	<field name="Photos_In_System" class="java.lang.String"/>
+	<field name="Existing_Repair_Interference" class="java.lang.String"/>
+	<field name="SRM_CMM_Repair_Applicaibility" class="java.lang.String"/>
+	<field name="SRM_CMM_Repair_Reference" class="java.lang.String"/>
+	<field name="Repair_Not_Used_Reason" class="java.lang.String"/>
+	<field name="Applicable_ADs" class="java.lang.String"/>
+	<field name="Remarks" class="java.lang.String"/>
+	<field name="Requested_by" class="java.lang.String"/>
+	<field name="Requested_Date" class="java.util.Date"/>
+	<pageHeader>
+		<band height="75">
+			<frame>
+				<reportElement x="-1" y="-1" width="556" height="76" uuid="06c03c5c-8e2a-4f9c-9a5b-bc23e88996ab">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<rectangle>
+					<reportElement mode="Transparent" x="0" y="0" width="61" height="76" backcolor="#FFFFFF" uuid="e6956cd0-24aa-4ae3-91e9-cc8189289d93"/>
+					<graphicElement>
+						<pen lineWidth="0.3"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement mode="Transparent" x="61" y="0" width="386" height="76" backcolor="#FFFFFF" uuid="e8bef696-cb89-4d40-96b9-82ccc65eca3b"/>
+					<graphicElement>
+						<pen lineWidth="0.3"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement mode="Transparent" x="447" y="0" width="109" height="76" backcolor="#FFFFFF" uuid="6c4d7738-ddc5-4e35-b2b0-5c7ec1e9af90">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.3"/>
+					</graphicElement>
+				</rectangle>
+				<image>
+					<reportElement x="6" y="1" width="50" height="67" uuid="716d2560-ebed-4f4d-8089-bbd20f0ae93f"/>
+					<imageExpression><![CDATA["C:\\Users\\ivaks\\JaspersoftWorkspace\\ERO_M10\\GATelesis-Logo_blue.jpg"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="451" y="24" width="98" height="52" uuid="6176a5fc-f34b-437e-8462-f5e5627703fc"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri Light" size="12"/>
+						<paragraph lineSpacingSize="0.0"/>
+					</textElement>
+					<text><![CDATA[Form M-52
+Rev 2
+Date: 03/15/2016]]></text>
+				</staticText>
+				<frame>
+					<reportElement x="61" y="9" width="386" height="59" uuid="831b4a2e-c085-4c23-bf44-dd791ef96cae"/>
+					<staticText>
+						<reportElement x="0" y="0" width="386" height="40" uuid="d197eb3c-3756-459d-b0c5-4dc9955e4250"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Calibri" size="16" isBold="true"/>
+						</textElement>
+						<text><![CDATA[GA TELESIS COMPOSITES REPAIR GROUP]]></text>
+					</staticText>
+					<staticText>
+						<reportElement x="0" y="29" width="386" height="30" uuid="72dddd8d-1bdb-4950-aafb-030eb4940791"/>
+						<textElement textAlignment="Center">
+							<font fontName="Calibri" size="14" isBold="true"/>
+						</textElement>
+						<text><![CDATA[ENGINEERING ASSISTANCE REQUEST]]></text>
+					</staticText>
+				</frame>
+			</frame>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="674">
+			<frame>
+				<reportElement x="0" y="15" width="555" height="655" uuid="784a4b2e-22de-426a-a627-d8980961a174"/>
+				<frame>
+					<reportElement x="0" y="0" width="555" height="20" uuid="e8bd7403-4707-40bb-a58d-5ff3b0170ee0"/>
+					<frame>
+						<reportElement x="0" y="0" width="280" height="20" uuid="ffe136e0-052a-49fc-aaf1-63bc46f9f420"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="280" height="20" backcolor="#FFFFFF" uuid="e992135b-660e-49eb-80f0-022cd95c2f32"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<textField>
+							<reportElement x="70" y="0" width="210" height="20" uuid="22222222-2222-2222-2222-222222222222"/>
+							<box leftPadding="5"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Requested_by}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement x="0" y="0" width="70" height="20" uuid="11111111-1111-1111-1111-111111111111">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Requested by:]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="280" y="0" width="275" height="20" uuid="e50c93f0-88c9-42eb-9caa-ed789035605a"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="275" height="20" backcolor="#FFFFFF" uuid="48550641-6023-492f-976b-b58cf829651f"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="30" height="20" uuid="b226466d-adbc-4ca5-9de0-f4278e9b4fc6">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Date:]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="30" y="0" width="245" height="20" uuid="7bea7e2a-c6a3-48ea-b9d1-54b7284989a7"/>
+							<box leftPadding="5"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Requested_Date}]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+				<frame>
+					<reportElement x="0" y="20" width="555" height="40" uuid="dc09419a-0a56-4ea6-bb3b-219263e7e26b"/>
+					<frame>
+						<reportElement x="0" y="0" width="111" height="40" uuid="17ead0a5-3557-44aa-863b-aa9b8f12b370"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="111" height="20" backcolor="#DDD9C3" uuid="3f27c01e-d63f-43f4-9058-b635049e2e0c">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="111" height="20" backcolor="#FFFFFF" uuid="1e9a7848-0a5c-4b30-9fdd-5b8ad90f6b59">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="111" height="20" uuid="5cb823e4-ccad-4e92-ac70-24d29027b886"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[WO#]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="111" height="20" uuid="fbfe91b5-41b7-4b30-ad95-4ab3c579af1c"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{WO_Number}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="111" y="0" width="111" height="40" uuid="2b4fe092-8599-468a-bd45-13dab2f2d62f"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="111" height="20" backcolor="#DDD9C3" uuid="14075fde-81cd-4347-8217-32b43c996497">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="111" height="20" backcolor="#FFFFFF" uuid="891d8c17-4809-48f9-b992-a677e91b81fa">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="111" height="20" uuid="41c046da-6a2e-4986-ba15-d99069ea3cc0"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[M10 Item#]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="111" height="20" uuid="06117f9d-ba73-43ee-95a3-e06789017086"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Item_Number}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="222" y="0" width="111" height="40" uuid="4681680f-c8df-4aed-a7db-65d119662c8a"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="111" height="20" backcolor="#DDD9C3" uuid="4ca07224-06e4-44c2-b9cf-e28fc6072396">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="111" height="20" backcolor="#FFFFFF" uuid="fb998667-8d2b-495f-b3a0-c7b733e1133d">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="111" height="20" uuid="9c5fec04-b385-4464-a25f-46b916f574e6"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Customer]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="111" height="20" uuid="9dcbacc5-9179-4f59-a558-b30dfbb7770f"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Customer}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="333" y="0" width="111" height="40" uuid="e6ba75c5-3729-4975-b8d1-612a31f6217a"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="111" height="20" backcolor="#DDD9C3" uuid="84117506-0a80-41d1-91e4-f162c25b71c0">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="111" height="20" backcolor="#FFFFFF" uuid="0cf7d791-218d-40c7-9c16-9b7a4214e344">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="111" height="20" uuid="5677abac-a66e-4a6b-b8cd-c905b8069844"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Customer RO]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="111" height="20" uuid="cf273510-b5ba-4a8c-bfb1-883e3f2c3657"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Customer_RO}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="444" y="0" width="111" height="40" uuid="3d5ca54a-3689-4efd-ba10-bad08a051252"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="111" height="20" backcolor="#DDD9C3" uuid="dbec7e2e-1c1b-48db-875d-922061e81228">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="111" height="20" backcolor="#FFFFFF" uuid="2c0ee0a7-f452-410e-9cc9-b8d45d1b9744">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="111" height="20" uuid="fc068233-12a3-4cd7-80f8-9db1f9288d62"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Certification Basis]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="111" height="20" uuid="ef6f7787-e6bd-4b63-8237-ef783f3c19a5"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Certification_Basis}]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+				<frame>
+					<reportElement x="0" y="60" width="555" height="60" uuid="57fcad52-b0b4-4b9f-80c5-d9168d5114fd"/>
+					<frame>
+						<reportElement x="0" y="0" width="555" height="20" uuid="95f1216c-d650-4e55-9385-592b24a994b2"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="555" height="20" backcolor="#DDD9C3" uuid="f1c0be63-caf8-4f23-b5cc-392ffa9b1b09"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="4b405f0c-b1e6-457c-baf4-8ba8ae3171db"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Damaged Part Information]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="0" y="20" width="150" height="40" uuid="2c7c9c8b-5ea4-4ee1-ad34-772c0eccade8"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="150" height="20" backcolor="#FFFFFF" uuid="fa946deb-ddcd-4cde-ae3d-ef61c90d1b51">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="150" height="20" backcolor="#FFFFFF" uuid="3d39075d-312c-402d-8ead-8ef9dbd405bf">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="150" height="20" uuid="8f69021a-dcf9-4d71-9493-7e2cd055ed19">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Part#:]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="150" height="20" uuid="d773ec4f-8bf8-4261-91c1-617b2faff19a"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Part_Number}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="150" y="20" width="150" height="40" uuid="755be120-d387-4162-806b-d32cf6cf8dfe"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="150" height="20" backcolor="#FFFFFF" uuid="f4951c45-971d-4e40-9089-83477ed30128"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="150" height="20" backcolor="#FFFFFF" uuid="066f8f19-1fd4-45f4-a815-d373d1412405"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="150" height="20" uuid="28de5bf5-4d9d-47f6-80fc-37b6807419e2">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Serial#:]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="150" height="20" uuid="f61db366-6265-468f-8659-561da1b8eefa"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Serial_Number}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="300" y="20" width="150" height="40" uuid="36ff1249-a6d6-408c-9834-b90241884eb3"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="150" height="20" backcolor="#FFFFFF" uuid="5aca8b96-11d8-41ad-86ef-52d8f5e0e425"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="150" height="20" backcolor="#FFFFFF" uuid="11f8e867-506f-4cd1-9d9b-04cabd214abc"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="150" height="20" uuid="1fd219be-92d4-4096-a207-b5b6d2354f45">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Nomenclature:]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="150" height="20" uuid="fede186c-8881-432d-b7a2-4630d16f2d9c"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Nomenclature}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="450" y="20" width="105" height="40" uuid="44f93474-d401-4b59-bea5-78070aa52445"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="105" height="20" backcolor="#FFFFFF" uuid="0c400661-010d-4f10-b811-ba595179b83c">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="20" width="105" height="20" backcolor="#FFFFFF" uuid="1bdcebf4-61a4-4d5b-9733-f4f66d6b1176">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="105" height="20" uuid="f63139f9-7a2c-4d0d-b8ee-13c80a39e5cb">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[A/C Model:]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="0" y="20" width="105" height="20" uuid="85b06532-a038-42d3-a1ca-8d959e5e337b"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{AC_Model}]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+				<frame>
+					<reportElement x="0" y="120" width="555" height="270" uuid="7702b914-e134-419a-b97e-37d5682f1287"/>
+					<frame>
+						<reportElement x="0" y="0" width="555" height="20" uuid="91ce9fc4-744a-465f-ad9b-d061c8a3c5e4"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="555" height="20" backcolor="#DDD9C3" uuid="aee4cfa9-3fcb-405e-88bd-cf6f6e243581"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="1d6bcdec-6217-4b3c-bd38-740c768057ac"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Description  of damage and location]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="0" y="20" width="555" height="80" uuid="76a66589-3689-4af9-b895-8b18f1d0d56f"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="80" backcolor="#FFFFFF" uuid="7bbfb780-af69-46ec-8a8b-619b945f0bf6">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="061458d8-01be-4eb2-b9d8-d51799a331f1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Type of Damage: (crack, corrosion, delamination, etc.)]]></text>
+						</staticText>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="0" y="20" width="555" height="60" uuid="224f3075-dd81-4f57-b562-e2fe594aef70"/>
+							<box leftPadding="5"/>
+							<textElement>
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Damage_Type}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="0" y="100" width="555" height="50" uuid="f5aa8e0b-7793-477f-ac9f-935179937e8e"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="50" backcolor="#FFFFFF" uuid="4d136105-64af-421f-ad48-676173de3aec">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="c6fc8473-2f95-47ee-af13-514972b285d0">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Dimensions of the damage:]]></text>
+						</staticText>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="0" y="20" width="555" height="30" uuid="6605d295-9edb-4527-b7c4-557be5bea9e7">
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement>
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Damage_Dimensions}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="0" y="150" width="555" height="50" uuid="8a6fb892-9d9d-4659-8849-f5571d4c9dd2"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="50" backcolor="#FFFFFF" uuid="cd076212-daf8-4493-a214-17278d8ebe80">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="dc51ade6-d604-47a5-942c-20899408c7bb">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Location of the damage:]]></text>
+						</staticText>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="0" y="20" width="555" height="30" uuid="37b05f21-3476-45a3-8d2e-5f16189a9e6e">
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement>
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Damage_Location}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="0" y="200" width="555" height="40" uuid="c74fd098-8f16-4e4c-a689-b7bce9a668b3"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="20" backcolor="#FFFFFF" uuid="7d21d8f2-3bd5-4ed5-98dd-065bae3a1221">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="110" height="20" uuid="b2c54c91-44ea-4fb0-875e-746572076541">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Mapping in the system:]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="110" y="0" width="168" height="20" uuid="a798afef-d001-4abe-8cf5-3cbbb177cdcb"/>
+							<box leftPadding="5"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Mapping_In_System}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement x="278" y="0" width="102" height="20" uuid="dcbd5bd8-dca3-4f05-b100-d8ed3de430e5">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Photos in the system:]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="380" y="0" width="175" height="20" uuid="aaad5508-fc16-4f60-ae7e-a1847358f789"/>
+							<box leftPadding="5"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Photos_In_System}]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="0" y="220" width="555" height="50" uuid="b7054e92-59e1-4533-b7f0-9d59f42d0360"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="50" backcolor="#FFFFFF" uuid="49f9a4a1-89a8-455e-a68c-ca4b619cef7e">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="210" height="20" uuid="b828ab75-3ae5-4619-8ad3-b1272c811e9d">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Is there an existing repair that may interfere?]]></text>
+						</staticText>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="39" y="20" width="515" height="30" uuid="59b06eed-b17e-4259-a137-ca20ad06b6e1">
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</reportElement>
+							<box topPadding="2" leftPadding="5"/>
+							<textElement>
+								<font fontName="Arial" size="10"/>
+							</textElement>
+						</textField>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="210" y="0" width="344" height="19" uuid="12b575cb-9167-4a87-b22a-4449949b90db">
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Existing_Repair_Interference}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement x="0" y="20" width="39" height="30" uuid="ed05870f-ee5e-4fcd-8d69-b836b93a6bb1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Detail:]]></text>
+						</staticText>
+					</frame>
+				</frame>
+				<frame>
+					<reportElement x="0" y="390" width="555" height="135" uuid="c8a792a3-a175-49d5-a886-9a8860bff14a"/>
+					<frame>
+						<reportElement x="0" y="0" width="555" height="20" uuid="dbe53164-876e-471e-b9ff-9092e2b60f75"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="555" height="20" backcolor="#DDD9C3" uuid="af1ff0fb-4426-4017-9145-745ad24f64da"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="ef0e5866-0d40-4baf-af88-77f513938eb7"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10" isBold="false"/>
+							</textElement>
+							<text><![CDATA[Reference documents (Manual and ATA Chapter, S/B’s, Drawings, etc.)]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="0" y="20" width="555" height="20" uuid="45e3a481-88da-47f8-acd5-4d1643061806"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="20" backcolor="#FFFFFF" uuid="f3354907-53bd-4428-bcdd-94ab1c9aa0aa">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="816dfb18-20ea-4249-875d-2fd16d288c75">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="0" y="40" width="555" height="45" uuid="5b90c12f-5c39-4341-a79f-1f14d0006e0b"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="45" backcolor="#FFFFFF" uuid="0412bfb6-31f9-4b0d-8571-210e66ae4dcb">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="270" height="20" uuid="06f70cb3-6c90-47b2-904e-6ad219c836c7">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Is there a SRM/CMM repair that may apply to this damage?]]></text>
+						</staticText>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="61" y="20" width="494" height="25" uuid="9608f32b-f162-4725-a0f7-56130f074a51">
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</reportElement>
+							<box topPadding="2" leftPadding="5" bottomPadding="2"/>
+							<textElement verticalAlignment="Bottom">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{SRM_CMM_Repair_Reference}]]></textFieldExpression>
+						</textField>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="270" y="0" width="285" height="20" uuid="7fa5e10c-633e-4860-952d-ac517569fdcc">
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{SRM_CMM_Repair_Applicaibility}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement x="0" y="20" width="61" height="25" uuid="69a70206-de51-45ba-a4e4-99170873958d">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</reportElement>
+							<box leftPadding="5" bottomPadding="2"/>
+							<textElement textAlignment="Left" verticalAlignment="Bottom">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Reference:]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="0" y="85" width="555" height="50" uuid="367f0f65-f3d4-42d7-911f-fe2a6629cbbf"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="50" backcolor="#FFFFFF" uuid="d2e4176b-3e39-46cc-aa65-03cc2e249b5b">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="21faf4dc-f94d-4412-80a3-d645fe9fab02">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<text><![CDATA[Why the repair can't be used?]]></text>
+						</staticText>
+						<textField textAdjust="ScaleFont">
+							<reportElement x="0" y="20" width="555" height="30" uuid="0d944156-f5f8-4917-8407-4d1fe3417634">
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							</reportElement>
+							<box leftPadding="5"/>
+							<textElement>
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Repair_Not_Used_Reason}]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+				<frame>
+					<reportElement x="0" y="525" width="555" height="40" uuid="440d3ab7-fe02-4c8c-a0e9-483b54fb856e"/>
+					<frame>
+						<reportElement x="0" y="0" width="555" height="20" uuid="9a102ee3-e6a5-403c-927a-3b840fe6aa23"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="555" height="20" backcolor="#DDD9C3" uuid="4c1f0c33-abb6-434e-922b-b1d7724f0681"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="2681eb10-51f3-4419-a361-26dd95d2b4c8"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10" isBold="false"/>
+							</textElement>
+							<text><![CDATA[Applicable AD(s)]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="0" y="20" width="555" height="20" uuid="49b8cf86-40e4-4973-8bb2-58f5bb1724f8"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="20" backcolor="#FFFFFF" uuid="9dae4747-ed5f-46c5-8b38-230d3738e501">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<textField>
+							<reportElement x="0" y="0" width="555" height="20" uuid="c6628003-9a1a-4065-9594-a3481eae8274"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Applicable_ADs}]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+				<frame>
+					<reportElement x="0" y="565" width="555" height="90" uuid="19ce8683-b3cb-4b52-ba97-8a52c8c63cc9"/>
+					<frame>
+						<reportElement x="0" y="0" width="555" height="20" uuid="b262d6fc-eb8d-45da-ac3d-47c86ff69575"/>
+						<rectangle>
+							<reportElement x="0" y="0" width="555" height="20" backcolor="#DDD9C3" uuid="a7d26699-8e66-428f-b2a2-81a1c93a3f9e"/>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<staticText>
+							<reportElement x="0" y="0" width="555" height="20" uuid="4441f496-8e64-41a5-8a68-a3db47fbea4e"/>
+							<box leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="Arial" size="10" isBold="false"/>
+							</textElement>
+							<text><![CDATA[Remarks]]></text>
+						</staticText>
+					</frame>
+					<frame>
+						<reportElement x="0" y="20" width="555" height="70" uuid="5bce9d02-2739-4fd8-bca6-99be4ce33dcc"/>
+						<rectangle>
+							<reportElement mode="Transparent" x="0" y="0" width="555" height="70" backcolor="#FFFFFF" uuid="e70d635b-f661-4cc4-912b-eb62658c980c">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="0.3"/>
+							</graphicElement>
+						</rectangle>
+						<textField>
+							<reportElement x="0" y="0" width="555" height="70" uuid="c0f46902-2c03-4393-b3f3-e2d4b0a6a66d"/>
+							<box topPadding="2" leftPadding="5"/>
+							<textElement textAlignment="Left" verticalAlignment="Top">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{Remarks}]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>
