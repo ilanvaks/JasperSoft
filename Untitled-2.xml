@@ -1,0 +1,9 @@
+<text><![CDATA[Type of Damage: (crack, corrosion, delamination, etc.)]]></text>
+						</staticText>
+						<textField>
+							<reportElement x="110" y="0" width="168" height="20" uuid="a798afef-d001-4abe-8cf5-3cbbb177cdcb"/>
+							<box leftPadding="5"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{type_of_damage}]]></textFieldExpression>
